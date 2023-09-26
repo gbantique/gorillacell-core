@@ -1,5 +1,5 @@
 namespace Gorillacell {
-    let i2cAddr: number // 0x3F: PCF8574A, 0x27: PCF8574
+    let i2cAddr: number // 0x3F: PCF8574A, 0x27: PCF8574, 0x20: PCF8574T
     let BK: number      // backlight control
     let RS: number      // command/data
 
@@ -62,15 +62,14 @@ namespace Gorillacell {
     }
 
     /**
-     * initial LCD, set I2C address. Address is 39/63 for PCF8574/PCF8574A
-     * @param Addr is i2c address for LCD, eg: 0, 39, 63. 0 is auto find address
+     * initial LCD, set I2C address.
+     * @param Addr is i2c address for LCD, 0 is auto find address
      */
-    //% blockId="gorillacell_lcd_i2c_set_address"
-    //% block="LCD initialize with Address %addr"
+    //% blockId="gorillacell_lcd_i2c_init"
+    //% block="Set LCD to %addr I2C Address "
     //% weight=100 blockGap=8
-    //% parts=LCD1602_I2C trackArgs=0
-    //% subcategory="lcd_i2c"
-    export function LcdInit(Addr: number) {
+    //% subcategory="lcd i2c"
+    export function init(Addr: number) {
         if (Addr == 0) i2cAddr = AutoAddr()
         else i2cAddr = Addr
         BK = 8
@@ -97,12 +96,39 @@ namespace Gorillacell {
     //% weight=90 blockGap=8
     //% x.min=0 x.max=15
     //% y.min=0 y.max=1
-    //% parts=LCD1602_I2C trackArgs=0
-    //% subcategory="lcd_i2c"
+    //% subcategory="lcd i2c"
     export function ShowNumber(n: number, x: number, y: number): void {
         let s = n.toString()
         ShowString(s, x, y)
     }
+
+    /**
+     * Show numbers in LCD at given position
+     * @param numbers is an array of numbers to be displayed, eg: [10, 100, 200]
+     * @param x is LCD column position, eg: 0
+     * @param y is LCD row position, eg: 0
+     */
+    //% blockId="I2C_LCD1620_SHOW_NUMBERS" block="show numbers %numbers|at x %x|y %y"
+    //% weight=90 blockGap=8
+    //% x.min=0 x.max=15
+    //% y.min=0 y.max=1
+    //% subcategory="lcd i2c"
+    export function ShowNumbers(numbers: number[], x: number, y: number): void {
+        let numStrings: string[] = [];
+
+        // Convert numbers to strings
+        for (let num of numbers) {
+            numStrings.push(num.toString());
+        }
+
+        // Join the number strings with a space separator
+        let combinedString = numStrings.join(" ");
+
+        // Display the combined string on the LCD
+        ShowString(combinedString, x, y);
+    }
+
+
 
     /**
      * show a string in LCD at given position
@@ -114,8 +140,7 @@ namespace Gorillacell {
     //% weight=90 blockGap=8
     //% x.min=0 x.max=15
     //% y.min=0 y.max=1
-    //% parts=LCD1602_I2C trackArgs=0
-    //% subcategory="lcd_i2c"
+    //% subcategory="lcd i2c"
     export function ShowString(s: string, x: number, y: number): void {
         let a: number
 
@@ -136,8 +161,7 @@ namespace Gorillacell {
      */
     //% blockId="I2C_LCD1620_ON" block="turn on LCD"
     //% weight=81 blockGap=8
-    //% parts=LCD1602_I2C trackArgs=0
-    //% subcategory="lcd_i2c"
+    //% subcategory="lcd i2c"
     export function on(): void {
         cmd(0x0C)
     }
@@ -148,7 +172,7 @@ namespace Gorillacell {
     //% blockId="I2C_LCD1620_OFF" block="turn off LCD"
     //% weight=80 blockGap=8
     //% parts=LCD1602_I2C trackArgs=0
-    //% subcategory="lcd_i2c"
+    //% subcategory="lcd i2c"
     export function off(): void {
         cmd(0x08)
     }
@@ -158,8 +182,7 @@ namespace Gorillacell {
      */
     //% blockId="I2C_LCD1620_CLEAR" block="clear LCD"
     //% weight=85 blockGap=8
-    //% parts=LCD1602_I2C trackArgs=0
-    //% subcategory="lcd_i2c"
+    //% subcategory="lcd i2c"
     export function clear(): void {
         cmd(0x01)
     }
@@ -169,8 +192,7 @@ namespace Gorillacell {
      */
     //% blockId="I2C_LCD1620_BACKLIGHT_ON" block="turn on backlight"
     //% weight=71 blockGap=8
-    //% parts=LCD1602_I2C trackArgs=0
-    //% subcategory="lcd_i2c"
+    //% subcategory="lcd i2c"
     export function BacklightOn(): void {
         BK = 8
         cmd(0)
@@ -181,8 +203,7 @@ namespace Gorillacell {
      */
     //% blockId="I2C_LCD1620_BACKLIGHT_OFF" block="turn off backlight"
     //% weight=70 blockGap=8
-    //% parts=LCD1602_I2C trackArgs=0
-    //% subcategory="lcd_i2c"
+    //% subcategory="lcd i2c"
     export function BacklightOff(): void {
         BK = 0
         cmd(0)
@@ -193,8 +214,7 @@ namespace Gorillacell {
      */
     //% blockId="I2C_LCD1620_SHL" block="Shift Left"
     //% weight=61 blockGap=8
-    //% parts=LCD1602_I2C trackArgs=0
-    //% subcategory="lcd_i2c"
+    //% subcategory="lcd i2c"
     export function shl(): void {
         cmd(0x18)
     }
@@ -204,8 +224,7 @@ namespace Gorillacell {
      */
     //% blockId="I2C_LCD1620_SHR" block="Shift Right"
     //% weight=60 blockGap=8
-    //% parts=LCD1602_I2C trackArgs=0
-    //% subcategory="lcd_i2c"
+    //% subcategory="lcd i2c"
     export function shr(): void {
         cmd(0x1C)
     }

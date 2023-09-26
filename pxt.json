@@ -13,7 +13,9 @@
         "gorillacell-core.ts",
         "gorillacell-motor.ts",
         "gorillacell-sensor.ts",
-        "gorillacell-lcd-i2c.ts"
+        "gorillacell-lcd-i2c.ts",
+        "gorillacell-helper.ts",
+        "gorillacell-air-quality.ts"
     ],
     "testFiles": [
         "test.ts"
@@ -25,5 +27,5 @@
     "supportedTargets": [
         "microbit"
     ],
-    "preferredEditor": "tsprj"
+    "preferredEditor": "blocksprj"
 }
